@@ -144,6 +144,7 @@ public class ApiResponseServiceTest {
         assertEquals("5000.00", response.getOrderAmount());
         assertEquals("USD", response.getOrderCurrency());
         assertEquals("order-78oSgRzCqs", response.getOrderId());
+        
     }
     /* essentials_exclude_end */
 

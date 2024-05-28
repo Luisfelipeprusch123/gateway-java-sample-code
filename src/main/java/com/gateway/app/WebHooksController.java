@@ -38,6 +38,12 @@ public class WebHooksController {
         ModelAndView mav = new ModelAndView("webhooks");
         return mav;
     }
+ 
+    @GetMapping("/list-notifications")
+    public ModelAndView WebHooksController() {
+        ModelAndView mav = new ModelAndView("webhooks");
+        return mav;
+    }
 
     @GetMapping("/list-webhook-notifications")
     public @ResponseBody List<WebhookNotification> listWebhooks() throws IOException {
