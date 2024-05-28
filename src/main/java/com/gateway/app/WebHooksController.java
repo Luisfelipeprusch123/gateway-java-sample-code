@@ -28,6 +28,7 @@ public class WebHooksController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebHooksController.class);
 
+    private static final String NotificationSecret = null;
 
     @Autowired
     private Config config;
@@ -68,18 +69,15 @@ public class WebHooksController {
 
     @PostMapping("/process-webhook")
     @ResponseStatus(HttpStatus.OK)
-    public void processWebhook(@RequestBody String payload, @RequestHeader("X-Notification-Secret") String notificationSecret) throws IOException {
+    public String processWebhook(@RequestBody String payload, @RequestHeader("X-Notification-Secret") String notificationSecret) throws IOException {
 
         if (config.getWebhooksNotificationSecret() != null && notificationSecret != null && !config.getWebhooksNotificationSecret().equalsIgnoreCase(notificationSecret)) {
             logger.error("Web hooks notification secret doesn't match, so not processing the incoming request!");
-            return;
+            return notificationSecret;
+        } else {
+            logger.info("Web hooks  notification");
+            return NotificationSecret;
         }
-
-        JsonObject payloadJSON = new Gson().fromJson(payload, JsonObject.class);
-        JsonObject order = (JsonObject) payloadJSON.get("order");
-        JsonObject transaction = (JsonObject) payloadJSON.get("transaction");
-
-        writeWebhookNotification(order.get("id").getAsString(), transaction.get("id").getAsString(), order.get("status").getAsString(), order.get("amount").getAsString());
     }
 
     private void writeWebhookNotification(String orderId, String transactionId, String orderStatus, String orderAmount) throws IOException {
@@ -104,6 +102,22 @@ public class WebHooksController {
                 fileWriter.close();
             }
         }
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    public static String getNotificationsecret() {
+        return NotificationSecret;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
     }
 
 }
